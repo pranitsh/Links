@@ -4,8 +4,6 @@
 
 This web page provides a way to adaptably organize and open a number of links for checking homeworks due, work assigned, etc.
 
-Besides viewing links, the page shows the entire page's HTML and a "Compile and Copy" button, which stores the entire webpage as a link and copies it so that you can save it to a bookmark, share, etc.
-
 ## Features
 
 1. **Categories**: Provides structure to the links.
