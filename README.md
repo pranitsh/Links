@@ -25,23 +25,19 @@ To open links in a specific category:
 
 To add new links, you need to modify the `linkDictionary` object in the script section of the HTML:
 
-1. Search for `const linkDictionary` or similar and you will be brought to the correct place.
-2. The linkDictionary (a dictionary is something that contains an unmodifiable obect that points to some another object) contains strings (items enclosed with "" quotation marks) that point to lists (multiple items separated by commas and enclosed in square brackets) of strings.
-3. Modify the below with the below example:
-   Replace `CategoryName` with your desired category name and `link1`, `link2`, etc. with your web links.
-
-   ```javascript
-   const linkDictionary = {
-     "CategoryName": ["www.link1.com", "www.link2.com", ...],
-     ...
-   };
-   ```
-
 ### Editing and Compiling Code
 
-1. View the HTML code of the page in the "code display" box.
-2. Edit the code as desired.
-3. Click on the "Compile and Copy" button.
-4. The version of the website as a link can now be shared, saved to a bookmark, or opened through another method.
+1. Click on the "Embedded URL" button.
+2. The version of the website as a link can now be shared, saved to a bookmark, or opened through another method. It is completely detached from any online server and is completely private.
 
-This project is open to edits. Raise an issue, email me at prsh + 006 + gmail ending, or send a pull request.
+### Inspiration
+
+I wanted to try using data links and experiment more with JavaScript, HTML, and CSS. This was likely my first project more than a hundred lines in JavaScript when I first wrote it. This mainly served as a helpful tool for managing dozens of different docs and frequently glancing at the due dates for homeworks, etc.
+
+### Roadmap
+
+- Error catching mechanism
+- Better JSON display interface.
+- Cooler design
+- Icons in bookmark
+- More features for short-term links
