@@ -127,7 +127,7 @@ window.onload = function () {
         window.location.href = url.href
     });
     document.getElementById('Share').addEventListener('click', function () {
-        copyToClipboard(JSON.stringify(sectionHolder))
+        copyToClipboard(JSON.stringify(sectionHolder, null, "  "))
     });
     document.getElementById('Share URL').addEventListener('click', function () {
         const url = new URL(window.location.href)
