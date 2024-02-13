@@ -13,6 +13,7 @@
 </head>
 
 <body>
+  <h2 id="overallHeader"></h2>
   <div id="linkContainer"></div>
   <pre id="codeDisplay" class="code-display" contenteditable="true"></pre>
   <button id="Update">Update Screen</button>
@@ -87,6 +88,18 @@
       background-color: #f5f5f5;
       height: auto;
     }
+
+    .header-button {
+      background-color: transparent;
+      color: black;
+      border: none;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
   </style>
   <script>
     class LinkHolder {
@@ -108,12 +121,15 @@
       display() {
         const section = document.createElement('div');
         section.className = 'link-section';
-        const header = document.createElement('h3');
-        header.textContent = `Open ${this.title}'s links:`;
-        header.onclick = function () {
-          openLinks(this.links);
-        };
-        section.appendChild(header);
+        const button = document.createElement('button');
+        button.className = "header-button"
+        button.textContent = `Open All of ${this.title}'s links:`;
+        button.onclick = function (event) {
+          openLinks(this.links)
+        }.bind(this);
+        section.appendChild(button);
+        section.appendChild(document.createElement('br'))
+        section.appendChild(document.createElement('br'))
         this.links.forEach(link => {
           const anchor = document.createElement('a');
           anchor.href = link;
@@ -150,11 +166,8 @@
       display() {
         const section = document.createElement('div');
         section.className = 'link-section';
-        const header = document.createElement('h2');
+        const header = document.getElementById('overallHeader');
         header.textContent = `${this.title}`;
-        header.onclick = function (event) {
-          event.stopPropagation();
-        }
         section.appendChild(header);
         this.linkHolders.forEach(linkHolder => {
           section.appendChild(linkHolder.display());
@@ -186,7 +199,7 @@
       }
     }
 
-    function openLinks(link) {
+    function openLinks(links) {
       links.forEach(link => window.open(link, '_blank'))
     }
 
@@ -242,7 +255,7 @@
         copyToClipboard(url.href);
       });
       document.getElementById('Embedded URL').addEventListener('click', function () {
-        const encodedContent = encodeURIComponent("<!DOCTYPE html>" + document.head.innerHTML + document.body.innerHTML);
+        const encodedContent = encodeURIComponent("<!DOCTYPE html>" + document.body.innerHTML);
         const dataLink = "data:text/html;charset=UTF-8," + encodedContent;
         const url = new URL(dataLink);
         copyToClipboard(dataLink);
