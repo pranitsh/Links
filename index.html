@@ -3,6 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <title>Links Page</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="manifest" href="images/manifest.json">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+  <div id="linkContainer"></div>
+  <pre id="codeDisplay" class="code-display" contenteditable="true"></pre>
+  <button id="Update">Update Screen</button>
+  <button id="New Section">New Section</button>
+  <button id="Share URL">Share URL</button>
+  <button id="Embedded URL">Embedded URL</button>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <h4>Licenses</h4>
+  <h5>Project License</h5>
+  <p>This project is licensed under GNU. Please share any improvements or suggestions at
+    https://github.com/pranitsh/links
+  </p>
+  <h5>Icon License</h5>
+  <p>
+    Icon License:
+
+    MIT License
+
+    Copyright (c) 2020-2023 Paweł Kuna
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+  </p>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -33,7 +88,6 @@
       height: auto;
     }
   </style>
-  <link rel="stylesheet" href="styles.css">
   <script>
     class LinkHolder {
       title = ""
@@ -98,6 +152,9 @@
         section.className = 'link-section';
         const header = document.createElement('h2');
         header.textContent = `${this.title}`;
+        header.onclick = function (event) {
+          event.stopPropagation();
+        }
         section.appendChild(header);
         this.linkHolders.forEach(linkHolder => {
           section.appendChild(linkHolder.display());
@@ -120,6 +177,7 @@
         container.replaceChildren(this.display())
         const newText = JSON.stringify(this, null, "  ")
         codeDisplay.textContent = newText
+        console.log(window.location.host)
         const url = new URL(window.location.href)
         url.searchParams.set("content", JSON.stringify(this))
         window.history.pushState(null, '', url.href);
@@ -133,12 +191,29 @@
     }
 
     function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Copied!");
-      }).catch((err) => {
-        console.error('Oops, unable to copy', err);
-        feedbackMessage = 'Error copying link: ' + err;
-      })
+      try {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Copied!");
+        }).catch((err) => {
+          console.error('Oops, unable to copy', err);
+          feedbackMessage = 'Error copying link: ' + err;
+        })
+      } catch (err) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        let feedbackMessage = '';
+        try {
+          const successful = document.execCommand('copy');
+          feedbackMessage = successful ? 'Copied' : 'Failed to copy link.';
+        } catch (err) {
+          feedbackMessage = 'Error copying link: ' + err;
+        } finally {
+          document.body.removeChild(textarea);
+          alert(feedbackMessage);
+        }
+      }
     }
 
     window.onload = function () {
@@ -148,6 +223,9 @@
       if (new URL(window.location.href).searchParams.has("content")) {
         sectionHolder.update(new URL(window.location.href).searchParams.get("content"))
       }
+      if (codeDisplay.textContent !== '') {
+        sectionHolder.update(codeDisplay.textContent)
+      }
       container.replaceChildren(sectionHolder.display())
       codeDisplay.textContent = JSON.stringify(sectionHolder, null, "  ");
       document.getElementById('Update').addEventListener('click', function () {
@@ -156,7 +234,7 @@
       });
       document.getElementById('New Section').addEventListener('click', function () {
         sectionHolder.add()
-        sectionHolder.propagateChanges(container, sectionHolder)
+        sectionHolder.propagateChanges(container, codeDisplay)
       });
       document.getElementById('Share URL').addEventListener('click', function () {
         const url = new URL(window.location.href)
@@ -164,67 +242,13 @@
         copyToClipboard(url.href);
       });
       document.getElementById('Embedded URL').addEventListener('click', function () {
-        const encodedContent = encodeURIComponent("<!DOCTYPE html>" + document.documentElement.outerHTML);
+        const encodedContent = encodeURIComponent("<!DOCTYPE html>" + document.head.innerHTML + document.body.innerHTML);
         const dataLink = "data:text/html;charset=UTF-8," + encodedContent;
+        const url = new URL(dataLink);
         copyToClipboard(dataLink);
       });
     };
   </script>
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
-  <link rel="manifest" href="images/manifest.json">
-  <meta name="msapplication-TileColor" content="#da532c">
-  <meta name="theme-color" content="#ffffff">
-</head>
-
-<body>
-  <div id="linkContainer"></div>
-  <pre id="codeDisplay" class="code-display" contenteditable="true"></pre>
-  <button id="Update">Update Screen</button>
-  <button id="New Section">New Section</button>
-  <button id="Share URL">Share URL</button>
-  <button id="Embedded URL">Embedded URL</button>
-  <br></br>
-  <br></br>
-  <br></br>
-  <br></br>
-  <br></br>
-  <br></br>
-  <br></br>
-  <br></br>
-  <h4>Licenses</h4>
-  <h5>Project License</h5>
-  <p>This project is licensed under GNU. Please share any improvements or suggestions at
-    https://github.com/pranitsh/links
-  </p>
-  <h5>Icon License</h5>
-  <p>
-    Icon License:
-
-    MIT License
-
-    Copyright (c) 2020-2023 Paweł Kuna
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-  </p>
 </body>
 
 </html>
